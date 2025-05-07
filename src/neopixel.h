@@ -13,7 +13,7 @@
 
 
 // Module Exported Types Constants and Macros ----------------------------------
-#define PIXEL_QTTY    64    // how many leds
+#define PIXEL_QTTY    72    // how many leds
 #define PIXEL_SPACE    4
 
 #define SIZEOF_PIXEL_DATA    ((PIXEL_QTTY * 3 * 8) + (PIXEL_SPACE * (PIXEL_QTTY - 1)) + 1)
