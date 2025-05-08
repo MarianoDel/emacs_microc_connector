@@ -162,15 +162,20 @@
 
 
 //--- Exported Module Functions ------------------------------------------------
+void Hard_Timeouts (void);
+
 unsigned char S1_Plus_Is_On (void);
 unsigned char S2_Plus_Is_On (void);
 unsigned char S3_Plus_Is_On (void);
 unsigned char S4_Plus_Is_On (void);
+
 unsigned char S1_Neg_Is_On (void);
 unsigned char S2_Neg_Is_On (void);
 unsigned char S3_Neg_Is_On (void);
 unsigned char S4_Neg_Is_On (void);
+
 unsigned char IS_Plus_Is_On (void);
+
 unsigned char Probe_Act_Is_On (void);
 void Probe_Act_On (void);
 void Probe_Act_Off (void);

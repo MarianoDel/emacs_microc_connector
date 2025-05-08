@@ -80,9 +80,8 @@ SRC += ./src/test_functions.c
 
 SRC += ./src/neopixel.c
 SRC += ./src/neopixel_driver.c
+SRC += ./src/effects.c
 
-# SRC += ./src/supply.c
-# SRC += ./src/boost.c
 
 
 ## Core Support
