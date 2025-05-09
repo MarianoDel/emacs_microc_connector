@@ -4,34 +4,26 @@
 // ## @Editor: Emacs - ggtags
 // ## @TAGS:   Global
 // ##
-// #### EFFECTS.H ###############################
+// #### CONNECTORS.H ###############################
 //------------------------------------------------
 
 // Prevent recursive inclusion -------------------------------------------------
-#ifndef _EFFECTS_H_
-#define _EFFECTS_H_
+#ifndef _CONNECTORS_H_
+#define _CONNECTORS_H_
 
-#include "neopixel.h"
+// #include "neopixel.h"
 
 // Module Exported Types Constants and Macros ----------------------------------
-typedef enum {
-    MODE_DIMMER,
-    MODE_FIXT,
-    MODE_BLINK
-
-} conn_mode_e;
 
 
 // Module Exported Functions ---------------------------------------------------
-void Effects_Timeouts (void);
-void Effects_White_No_Conn_Reset (void);
-void Effects_White_No_Conn (void);
-void Effects_Connectors_Colors (unsigned char conn,
-				pixel_t new_pixel,
-				conn_mode_e mode);
-void Effects_Update_All (void);
+void Connectors_Update (void);
+void Connectors_Timeouts (void);
+unsigned char Connectors_Rpi_Get (void);
+void Connectors_Rpi_Set (unsigned char new_rpi_state);
 
-#endif    /* _EFFECTS_H_ */
+
+#endif    /* _CONNECTORS_H_ */
 
 //--- end of file ---//
 

@@ -21,7 +21,7 @@
 #include "comms.h"
 #include "effects.h"
 #include "test_functions.h"
-// #include "neopixel.h"
+#include "connectors.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -76,167 +76,179 @@ int main (void)
     Effects_White_No_Conn_Reset();
     unsigned char cnt = 0;
     unsigned char white_effect = 1;
-    timer_standby = 10000;
+    timer_standby = 20000;
+
+    // while (1)
+    // 	Effects_White_No_Conn();
     
     while (1)
     {
 	// Comms_Update ();
-
-	switch (cnt)
-	{
-	case 0:
-	    if (!timer_standby)
-	    {
-		timer_standby = 10000;
-		cnt++;
-		white_effect = 0;
-	    }
-
-	    Effects_White_No_Conn();
-	    break;
-
-	case 1:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 255;
-		my_pixel.G = 0;
-		my_pixel.B = 0;
+	Connectors_Update ();
+	// switch (cnt)
+	// {
+	// case 0:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 255;
+	// 	my_pixel.G = 0;
+	// 	my_pixel.B = 0;
 		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
 		
-		cnt++;
-	    }
-	    break;
-
-	case 2:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 0;
-		my_pixel.G = 255;
-		my_pixel.B = 0;
-		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
-		
-		cnt++;
-	    }
-	    break;
-
-	case 3:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 0;
-		my_pixel.G = 0;
-		my_pixel.B = 255;
-		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
-		
-		cnt++;
-	    }
-	    break;
-
-	case 4:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 255;
-		my_pixel.G = 0;
-		my_pixel.B = 0;
-		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
-		
-		cnt++;
-	    }
-	    break;
-
-	case 5:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 0;
-		my_pixel.G = 255;
-		my_pixel.B = 0;
-		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
-		
-		cnt++;
-	    }
-	    break;
-
-	case 6:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel;
-		my_pixel.R = 0;
-		my_pixel.G = 0;
-		my_pixel.B = 255;
-		
-		timer_standby = 10000;
-		for (int i = 0; i < 9; i++)
-		    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
-		
-		cnt++;
-	    }
-	    break;
-
-	case 7:
-	    if (!timer_standby)
-	    {
-		pixel_t my_pixel1;
-		pixel_t my_pixel2;
-		pixel_t my_pixel3;		
-		my_pixel1.R = 0;
-		my_pixel1.G = 0;
-		my_pixel1.B = 255;
-
-		my_pixel2.R = 255;
-		my_pixel2.G = 0;
-		my_pixel2.B = 0;
-
-		my_pixel3.R = 0;
-		my_pixel3.G = 255;
-		my_pixel3.B = 0;
-		
-		timer_standby = 10000;
-		Effects_Connectors_Colors (0, my_pixel1, MODE_BLINK);
-		Effects_Connectors_Colors (1, my_pixel1, MODE_DIMMER);
-		Effects_Connectors_Colors (2, my_pixel1, MODE_BLINK);
-		Effects_Connectors_Colors (3, my_pixel1, MODE_DIMMER);
-		Effects_Connectors_Colors (4, my_pixel2, MODE_BLINK);
-		Effects_Connectors_Colors (5, my_pixel2, MODE_FIXT);
-		Effects_Connectors_Colors (6, my_pixel2, MODE_DIMMER);
-		Effects_Connectors_Colors (7, my_pixel2, MODE_FIXT);
-		Effects_Connectors_Colors (8, my_pixel3, MODE_DIMMER);
-
-		
-		cnt++;
-	    }
-	    break;
+	// 	cnt++;
+	// 	white_effect = 0;
+	//     }
+	//     else
+	// 	Effects_White_No_Conn();
 	    
-	case 8:
-	    if (!timer_standby)
-	    {
-		cnt = 0;
-		Effects_White_No_Conn_Reset();
-		white_effect = 1;
-	    }
-	    break;
-	}
+	//     break;
 
-	if (!white_effect)
-	    Effects_Update_All ();
+	// case 1:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 82;
+	// 	my_pixel.G = 82;
+	// 	my_pixel.B = 82;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 2:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 0;
+	// 	my_pixel.G = 255;
+	// 	my_pixel.B = 0;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 3:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 0;
+	// 	my_pixel.G = 0;
+	// 	my_pixel.B = 255;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_DIMMER);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 4:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 255;
+	// 	my_pixel.G = 0;
+	// 	my_pixel.B = 0;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 5:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 0;
+	// 	my_pixel.G = 255;
+	// 	my_pixel.B = 0;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 6:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel;
+	// 	my_pixel.R = 0;
+	// 	my_pixel.G = 0;
+	// 	my_pixel.B = 255;
+		
+	// 	timer_standby = 10000;
+	// 	for (int i = 0; i < 9; i++)
+	// 	    Effects_Connectors_Colors (i, my_pixel, MODE_BLINK);
+		
+	// 	cnt++;
+	//     }
+	//     break;
+
+	// case 7:
+	//     if (!timer_standby)
+	//     {
+	// 	pixel_t my_pixel1;
+	// 	pixel_t my_pixel2;
+	// 	pixel_t my_pixel3;		
+	// 	my_pixel1.R = 0;
+	// 	my_pixel1.G = 0;
+	// 	my_pixel1.B = 255;
+
+	// 	my_pixel2.R = 255;
+	// 	my_pixel2.G = 0;
+	// 	my_pixel2.B = 0;
+
+	// 	my_pixel3.R = 0;
+	// 	my_pixel3.G = 255;
+	// 	my_pixel3.B = 0;
+		
+	// 	timer_standby = 10000;
+	// 	Effects_Connectors_Colors (0, my_pixel1, MODE_BLINK);
+	// 	Effects_Connectors_Colors (1, my_pixel1, MODE_DIMMER);
+	// 	Effects_Connectors_Colors (2, my_pixel1, MODE_BLINK);
+	// 	Effects_Connectors_Colors (3, my_pixel1, MODE_DIMMER);
+	// 	Effects_Connectors_Colors (4, my_pixel2, MODE_BLINK);
+	// 	Effects_Connectors_Colors (5, my_pixel2, MODE_FIXT);
+	// 	Effects_Connectors_Colors (6, my_pixel2, MODE_DIMMER);
+	// 	Effects_Connectors_Colors (7, my_pixel2, MODE_FIXT);
+	// 	Effects_Connectors_Colors (8, my_pixel3, MODE_DIMMER);
+
+		
+	// 	cnt++;
+	//     }
+	//     break;
+	    
+	// case 8:
+	//     if (!timer_standby)
+	//     {
+	// 	cnt = 0;
+	// 	Effects_White_No_Conn_Reset();
+	// 	white_effect = 1;
+	//     }
+	//     break;
+	// }
+
+	// if (!white_effect)
+	//     Effects_Update_All ();
     }
 }
 
@@ -256,6 +268,8 @@ void TimingDelay_Decrement(void)
     Hard_Timeouts ();
     
     Effects_Timeouts();
+
+    Connectors_Timeouts();
 }
 
 

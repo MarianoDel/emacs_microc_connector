@@ -106,7 +106,18 @@ void Effects_Timeouts (void)
 
 void Effects_White_No_Conn_Reset (void)
 {
+    pixel_t my_pixel;
+    
     effects_state = EFFECT_L0;
+
+    my_pixel.R = 0;
+    my_pixel.G = 0;
+    my_pixel.B = 0;
+
+    // start entire buffer with null color
+    for (int i = 0; i < 72; i++)
+	Neo_Set_Pixel(i, &my_pixel);
+    
 }
 
 
@@ -118,7 +129,7 @@ void Effects_White_No_Conn (void)
 	return;
 
     effects_timer = 1500;
-    
+
     my_pixel.R = 0;
     my_pixel.G = 0;
     my_pixel.B = 0;
@@ -126,7 +137,7 @@ void Effects_White_No_Conn (void)
     // start entire buffer with null color
     for (int i = 0; i < 72; i++)
 	Neo_Set_Pixel(i, &my_pixel);
-
+    
     my_pixel.R = 42;
     my_pixel.G = 42;
     my_pixel.B = 42;
