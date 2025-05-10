@@ -9,8 +9,9 @@
 
 // Includes --------------------------------------------------------------------
 #include "comms.h"
-#include "hard.h"
+// #include "hard.h"
 #include "usart.h"
+#include "connectors.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -38,10 +39,10 @@ static void Comms_Messages (char * msg_str);
 // Module Functions ------------------------------------------------------------
 void Comms_Update (void)
 {
-    if (Usart3HaveData())
+    if (Uart4HaveData())
     {
-        Usart3HaveDataReset();
-        Usart3ReadBuffer(comms_buff, SIZEOF_COMMS_BUFF);
+        Uart4HaveDataReset();
+        Uart4ReadBuffer(comms_buff, SIZEOF_COMMS_BUFF);
         Comms_Messages(comms_buff);
     }
 }
@@ -49,53 +50,33 @@ void Comms_Update (void)
 
 static void Comms_Messages (char * msg_str)
 {
-    char buff [128];    
+    // char buff [128];    
     
-    if (strncmp (msg_str, "get volts", sizeof("get volts") - 1) == 0)
+    if (strncmp (msg_str, "polarity pos", sizeof("polarity pos") - 1) == 0)
     {
-	// Supply_Send_Voltage_Start ();
+	Connectors_Polarity_Set(CONN_POLARITY_POS);
     }
 
-    else if (strncmp (msg_str, "get batt", sizeof("get batt") - 1) == 0)
+    else if (strncmp (msg_str, "polarity neg", sizeof("polarity neg") - 1) == 0)
     {
-	// Supply_Send_Voltage_Start ();
+	Connectors_Polarity_Set(CONN_POLARITY_NEG);
     }
 
-    else if (strncmp (msg_str, "get adc", sizeof("get adc") - 1) == 0)
+    else if (strncmp (msg_str, "polarity alt", sizeof("polarity alt") - 1) == 0)
     {
-	// sprintf(buff, "vin: %d bst: %d b1: %d b2: %d b3: %d b4: %d\r\n",
-	// 	Supply_Get_Mains(),
-	// 	Supply_Get_Boost(),
-	// 	Supply_Get_Batt(0),
-	// 	Supply_Get_Batt(1),
-	// 	Supply_Get_Batt(2),
-	// 	Supply_Get_Batt(3));
-
-	// Usart3Send(buff);
+	Connectors_Polarity_Set(CONN_POLARITY_ALT);
     }
     
-    else if (strncmp (msg_str, "get mode", sizeof("get mode") - 1) == 0)
+    else if (strncmp (msg_str, "rpi is up", sizeof("rpi is up") - 1) == 0)
     {
-	// unsigned char mode = 0;
-
-	// mode = Supply_Get_Mode();
-
-	// if (mode == SUPPLY_MODE_UNKNOW)
-	// {
-	//     Usart3Send("supply mode unknow\r\n");
-	// }
-	// else if (mode == SUPPLY_MODE_BATT)
-	// {
-	//     Usart3Send("supply mode battery\r\n");
-	// }
-	// else    // SUPPLY_MODE_MAINS
-	// {
-	//     Usart3Send("supply mode mains\r\n");
-	// }
+	Connectors_Rpi_Set(1);
     }
-
+    else if (strncmp (msg_str, "rpi is down", sizeof("rpi is down") - 1) == 0)
+    {
+	Connectors_Rpi_Set(0);
+    }
     // else
-    //     Usart3Send(s_ans_nok);
+    //     Uart4Send(s_ans_nok);
 
 }
 

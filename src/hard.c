@@ -32,6 +32,9 @@ volatile unsigned char s3n_cnt = 0;
 volatile unsigned char s4n_cnt = 0;
 volatile unsigned char isp_cnt = 0;
 
+volatile unsigned char probe_change = 0;
+volatile unsigned short probe_change_timeout = 0;
+
 
 // Module Private Functions ----------------------------------------------------
 void Hard_Update_Counter (unsigned char value,
@@ -50,6 +53,20 @@ void Hard_Timeouts (void)
     Hard_Update_Counter (S3_NEG, &s3n_cnt);
     Hard_Update_Counter (S4_NEG, &s4n_cnt);
     Hard_Update_Counter (IS_PLUS, &isp_cnt);
+
+    if (probe_change_timeout)
+	probe_change_timeout--;
+    else
+    {
+	if (probe_change)
+	{
+	    probe_change = 0;
+	    if (IS_Plus_Is_On())
+		Probe_Act_On();
+	    else
+		Probe_Act_Off();
+	}
+    }
 }
 
 
@@ -156,6 +173,13 @@ void Probe_Act_On (void)
 void Probe_Act_Off (void)
 {
     PROBE_ACT_OFF;
+}
+
+
+void Probe_Change_With_Delay (void)
+{
+    probe_change_timeout = 1000;
+    probe_change = 1;
 }
 
 //--- end of file ---//

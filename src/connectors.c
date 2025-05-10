@@ -45,6 +45,7 @@ typedef enum {
 } conn_rpi_state_e;
 
 
+
 // Externals -------------------------------------------------------------------
 
 
@@ -56,6 +57,8 @@ volatile unsigned short connectors_timeout = 0;
 void Connectors_Light (unsigned char ch,
 		       unsigned char * conn_ch_light);
 
+unsigned char Connectors_IS_Get (void);
+void Connectors_IS_Set (unsigned char new_is_state);
 
 
 // Module Functions ------------------------------------------------------------
@@ -109,12 +112,6 @@ void Connectors_Comms_Update (void)
 }
 
 
-void Connectors_Change_Mode (void)
-{
-    
-}
-
-
 void Connectors_Logic (unsigned char ch,
 		       unsigned char * conn_ch_st,
 		       unsigned char * conn_ch_light,
@@ -127,7 +124,12 @@ void Connectors_Logic (unsigned char ch,
     switch (ch)
     {
     case 0:
-	conn_0 = S1_Plus_Is_On();
+	if (IS_Plus_Is_On())
+	    conn_0 = 1;
+	else
+	    conn_0 = S1_Plus_Is_On();
+
+	// conn_0 = S1_Plus_Is_On();	
 	conn_1 = S1_Neg_Is_On();
 	who_fade = 'a';
 	break;
@@ -234,50 +236,34 @@ void Connectors_Logic (unsigned char ch,
 }
 
 
-// sample function
-// void Connectors_Update (void)
-// {
-//     unsigned char connector_a = NO_CONN;
-//     unsigned char connector_b = NO_CONN;
-//     unsigned char connector_c = NO_CONN;
-//     unsigned char connector_d = NO_CONN;
-
-//     unsigned char connector_light_a = LIGHT_NONE;
-//     unsigned char connector_light_b = LIGHT_NONE;
-//     unsigned char connector_light_c = LIGHT_NONE;
-//     unsigned char connector_light_d = LIGHT_NONE;
-
-//     char fading_ch = '\0';
-
-//     while (1)
-//     {
-// 	Connectors_Logic(0, &connector_a, &connector_light_a, &fading_ch);
-// 	Connectors_Logic(1, &connector_b, &connector_light_b, &fading_ch);
-// 	Connectors_Logic(2, &connector_c, &connector_light_c, &fading_ch);
-// 	Connectors_Logic(3, &connector_d, &connector_light_d, &fading_ch);
-
-// 	// update connectors pixels
-// 	Connectors_Light(0, &connector_light_a);
-// 	Connectors_Light(1, &connector_light_b);
-// 	Connectors_Light(2, &connector_light_c);
-// 	Connectors_Light(3, &connector_light_d);	
-
-// 	Effects_Update_All ();	
-//     }
-// }
-
-
 void Connectors_Light (unsigned char ch,
 		       unsigned char * conn_ch_light)
 {
     pixel_t my_pixel;
     unsigned char c_pos = 0;
-    unsigned char c_neg = 0;    
+    unsigned char c_neg = 0;
 
     switch (ch)
     {
     case 0:
-	c_pos = 8;
+	if (IS_Plus_Is_On())
+	{
+	    c_pos = 0;
+	    // c_null = 8;
+	    my_pixel.R = 0;
+	    my_pixel.G = 0;
+	    my_pixel.B = 0;
+	    Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);
+	}
+	else
+	{
+	    c_pos = 8;
+	    // c_null = 0;
+	    my_pixel.R = 0;
+	    my_pixel.G = 0;
+	    my_pixel.B = 0;
+	    Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+	}
 	c_neg = 1;
 	break;
 
@@ -316,6 +302,32 @@ void Connectors_Light (unsigned char ch,
 	break;
 
     case LIGHT_FIXED:
+	if (Connectors_Polarity_Get() == CONN_POLARITY_POS)
+	{
+	    my_pixel.R = 243;
+	    my_pixel.G = 58;
+	    my_pixel.B = 106;
+	    Effects_Connectors_Colors (c_pos, my_pixel, MODE_FIXT);
+	    my_pixel.R = 137;
+	    my_pixel.G = 207;
+	    my_pixel.B = 240;
+	    Effects_Connectors_Colors (c_neg, my_pixel, MODE_FIXT);
+	    break;
+	}
+	else if (Connectors_Polarity_Get() == CONN_POLARITY_NEG)
+	{
+	    my_pixel.R = 137;
+	    my_pixel.G = 207;
+	    my_pixel.B = 240;
+	    Effects_Connectors_Colors (c_pos, my_pixel, MODE_FIXT);
+	    my_pixel.R = 243;
+	    my_pixel.G = 58;
+	    my_pixel.B = 106;
+	    Effects_Connectors_Colors (c_neg, my_pixel, MODE_FIXT);
+	    break;
+	    
+	}
+	
 	my_pixel.R = 0;
 	my_pixel.G = 255;
 	my_pixel.B = 0;
@@ -398,9 +410,26 @@ void Connectors_Update (void)
 
 	Effects_Update_All ();
 
-	// Connectors_Comms_Update();
+	Connectors_Comms_Update();
 
-	// if (!Connectors_Rpi_Is_Up())
+	if (IS_Plus_Is_On ())
+	{
+	    if (!Connectors_IS_Get())
+	    {
+		Connectors_IS_Set(1);
+		Probe_Change_With_Delay();
+	    }
+	}
+	else
+	{
+	    if (Connectors_IS_Get())
+	    {
+		Connectors_IS_Set(0);
+		Probe_Change_With_Delay();
+	    }
+	}
+
+	// if (!Connectors_Rpi_Get())
 	// {
 	//     conn_rpi = CONN_INIT;
 	// }
@@ -420,5 +449,32 @@ void Connectors_Rpi_Set (unsigned char new_rpi_state)
 {
     connectors_rpi_is_up = new_rpi_state;
 }
+
+
+conn_polarity_e conn_pol = CONN_POLARITY_UNKNOW;
+conn_polarity_e Connectors_Polarity_Get (void)
+{
+    return conn_pol;
+}
+
+
+void Connectors_Polarity_Set (conn_polarity_e new_polarity)
+{
+    conn_pol = new_polarity;
+}
+
+
+unsigned char connectors_is_set = 0;
+unsigned char Connectors_IS_Get (void)
+{
+    return connectors_is_set;
+}
+
+
+void Connectors_IS_Set (unsigned char new_is_state)
+{
+    connectors_is_set = new_is_state;
+}
+
 
 //--- end of file ---//

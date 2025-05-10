@@ -158,9 +158,9 @@ void GpioInit (void)
     GPIOB->CRH = temp;    
     
     //--- GPIOB Pull-Up Pull-Dwn ------------------//
-    temp = GPIOB->ODR;    //PB13 PB12 pull-up
-    temp &= 0xCFFF;
-    temp |= 0x3000;
+    temp = GPIOB->ODR;    //PB13 PB12 PB6 pull-up
+    temp &= 0xCFBF;
+    temp |= 0x3040;
     GPIOB->ODR = temp;
 
     //--- GPIOC Low Side -------------------//

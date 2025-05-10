@@ -179,5 +179,7 @@ unsigned char IS_Plus_Is_On (void);
 unsigned char Probe_Act_Is_On (void);
 void Probe_Act_On (void);
 void Probe_Act_Off (void);
+void Probe_Change_With_Delay (void);
+
 
 #endif    /* HARD_H_ */
