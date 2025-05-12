@@ -30,7 +30,7 @@ unsigned char Connectors_Rpi_Get (void);
 void Connectors_Rpi_Set (unsigned char new_rpi_state);
 conn_polarity_e Connectors_Polarity_Get (void);
 void Connectors_Polarity_Set (conn_polarity_e new_polarity);
-
+void Connectors_Send_Present (void);
 
 
 #endif    /* _CONNECTORS_H_ */

@@ -477,4 +477,11 @@ void Connectors_IS_Set (unsigned char new_is_state)
 }
 
 
+void Connectors_Send_Present (void)
+{
+    char buff[40];
+    sprintf(buff, "conn 0x%02x 0x%02x\r\n", last_connectors, IS_Plus_Is_On ());
+    Uart4Send(buff);
+}
+
 //--- end of file ---//

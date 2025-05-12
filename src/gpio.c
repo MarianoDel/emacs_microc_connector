@@ -189,7 +189,7 @@ void GpioInit (void)
     //PC15 NC    oscillator
     temp = GPIOC->CRH;   
     temp &= 0xFFFF00FF;
-    temp |= 0x00008F00;
+    temp |= 0x00008B00;
     GPIOC->CRH = temp;
 
     //--- GPIOC Pull-Up Pull-Dwn ------------------//

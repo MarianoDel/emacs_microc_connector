@@ -66,7 +66,7 @@ int main (void)
     TIM3_Init();
     
     // // --- start supply manager
-    // Uart4Send("\r\n -- Connectors Board ver 1.0 init --\r\n");
+    Uart4Send("\r\n -- Connectors Board ver 1.0 init --\r\n");
     
     while (1)
     {

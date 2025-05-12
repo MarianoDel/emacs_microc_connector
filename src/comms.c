@@ -75,6 +75,10 @@ static void Comms_Messages (char * msg_str)
     {
 	Connectors_Rpi_Set(0);
     }
+    else if (strncmp (msg_str, "conn get", sizeof("conn get") - 1) == 0)
+    {
+	Connectors_Send_Present();
+    }
     // else
     //     Uart4Send(s_ans_nok);
 
