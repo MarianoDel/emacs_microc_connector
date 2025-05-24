@@ -30,7 +30,9 @@
 #define USE_DEVICE_ID_4BYTES
 // #define USE_DEVICE_ID_12BYTES
 
-
+// one or the other
+// #define RPI_NO_CONN_STEP_BY_TIMER    // go forward with 20s
+#define RPI_NO_CONN_STEP_BY_COMMS    // go forward if rpi is answering
 
 //-------- Oscillator and Crystal selection (Freq in startup_clocks.h) ---
 #define HSI_INTERNAL_RC

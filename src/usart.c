@@ -244,11 +244,6 @@ void USART1_IRQHandler (void)
             {
                 *prx1 = '\0';
                 usart1_have_data = 1;
-                // if (LED)
-                // 	LED_OFF;
-                // else
-                // 	LED_ON;
-
             }
             else
             {
@@ -414,11 +409,6 @@ void USART2_IRQHandler (void)
             {
                 *prx2 = '\0';
                 usart2_have_data = 1;
-                // if (LED)
-                // 	LED_OFF;
-                // else
-                // 	LED_ON;
-
             }
             else
             {
@@ -571,9 +561,10 @@ void USART3_IRQHandler (void)
 
         if (prx3 < &rx3buff[SIZEOF_RXDATA - 1])
         {
-            // USART3->DR = (unsigned char) dummy;    //para debug
-
-            if ((dummy == '\n') || (dummy == '\r') || (dummy == 26))		//26 es CTRL-Z
+            if (dummy == '\r')    //no le doy bola
+            {
+            }
+            else if ((dummy == '\n') || (dummy == 26))		//26 es CTRL-Z
             {
                 *prx3 = '\0';
                 usart3_have_data = 1;
@@ -731,15 +722,13 @@ void UART4_IRQHandler (void)
 
         if (prx4 < &rx4buff[SIZEOF_RXDATA - 1])
         {
-            if ((dummy == '\n') || (dummy == '\r') || (dummy == 26))		//26 es CTRL-Z
+            if (dummy == '\r')    //no le doy bola
+            {
+            }
+            else if ((dummy == '\n') || (dummy == 26))		//26 es CTRL-Z
             {
                 *prx4 = '\0';
                 uart4_have_data = 1;
-                // if (LED)
-                // 	LED_OFF;
-                // else
-                // 	LED_ON;
-
             }
             else
             {
@@ -893,15 +882,13 @@ void UART5_IRQHandler (void)
 
         if (prx5 < &rx5buff[SIZEOF_RXDATA - 1])
         {
-            if ((dummy == '\n') || (dummy == '\r') || (dummy == 26))		//26 es CTRL-Z
+            if (dummy == '\r')    //no le doy bola
+            {
+            }
+            else if ((dummy == '\n') || (dummy == 26))		//26 es CTRL-Z
             {
                 *prx5 = '\0';
                 uart5_have_data = 1;
-                // if (LED)
-                // 	LED_OFF;
-                // else
-                // 	LED_ON;
-
             }
             else
             {

@@ -40,6 +40,7 @@ typedef enum {
 typedef enum {
     CONN_INIT,
     CONN_RPI_DISCONNECT,
+    CONN_RPI_CHECK_ALREADY_CONNECT,
     CONN_RPI_OK
 
 } conn_rpi_state_e;
@@ -370,21 +371,16 @@ void Connectors_Update (void)
     {
     case CONN_INIT:
 	conn_rpi++;
-	connectors_timeout = 20000;
 	Effects_White_No_Conn_Reset();
+#ifdef RPI_NO_CONN_STEP_BY_TIMER
+	connectors_timeout = 20000;
+#endif
 	break;
 
     case CONN_RPI_DISCONNECT:
-	// if (connectors_timeout)
-	//     break;
-
-	// if (Connectors_Rpi_Is_Up())
-	// {
-	//     connectors_state++;
-	// }
 	
 	Effects_White_No_Conn();
-
+#ifdef RPI_NO_CONN_STEP_BY_TIMER
 	if (!connectors_timeout)
 	{
 	    pixel_t my_pixel;
@@ -394,6 +390,51 @@ void Connectors_Update (void)
 	    Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
 	    conn_rpi++;
 	}
+#endif
+#ifdef RPI_NO_CONN_STEP_BY_COMMS
+	if (Connectors_Rpi_Get())
+	{
+	    pixel_t my_pixel;
+	    my_pixel.R = 0;
+	    my_pixel.G = 0;
+	    my_pixel.B = 0;
+	    Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+	    conn_rpi++;
+	}
+#endif
+	break;
+
+    case CONN_RPI_CHECK_ALREADY_CONNECT:
+	if ((IS_Plus_Is_On()) && (S1_Neg_Is_On()))
+	{
+	    connector_a = TWO_CONN_FIXED;
+	    connector_light_a = LIGHT_FIXED;
+	}
+	else if ((S1_Plus_Is_On()) && (S1_Neg_Is_On()))
+	{
+	    connector_a = TWO_CONN_FIXED;
+	    connector_light_a = LIGHT_FIXED;
+	}
+	
+	if ((S2_Plus_Is_On()) && (S2_Neg_Is_On()))
+	{
+	    connector_b = TWO_CONN_FIXED;
+	    connector_light_b = LIGHT_FIXED;
+	}
+	
+	if ((S3_Plus_Is_On()) && (S3_Neg_Is_On()))
+	{
+	    connector_c = TWO_CONN_FIXED;
+	    connector_light_c = LIGHT_FIXED;
+	}
+
+	if ((S4_Plus_Is_On()) && (S4_Neg_Is_On()))
+	{
+	    connector_d = TWO_CONN_FIXED;
+	    connector_light_d = LIGHT_FIXED;
+	}
+
+	conn_rpi++;
 	break;
 	
     case CONN_RPI_OK:
@@ -429,10 +470,12 @@ void Connectors_Update (void)
 	    }
 	}
 
-	// if (!Connectors_Rpi_Get())
-	// {
-	//     conn_rpi = CONN_INIT;
-	// }
+#ifdef RPI_NO_CONN_STEP_BY_COMMS
+	if (!Connectors_Rpi_Get())
+	{
+	    conn_rpi = CONN_INIT;
+	}
+#endif
 	break;
     }
 }
