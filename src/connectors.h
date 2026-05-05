@@ -31,6 +31,9 @@ void Connectors_Rpi_Set (unsigned char new_rpi_state);
 conn_polarity_e Connectors_Polarity_Get (void);
 void Connectors_Polarity_Set (conn_polarity_e new_polarity);
 void Connectors_Send_Present (void);
+void Connectors_PowerOff_Set (void);
+void Connectors_PowerOff_Reset (void);
+unsigned char Connectors_PowerOff_Get (void);
 
 
 #endif    /* _CONNECTORS_H_ */

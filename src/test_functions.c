@@ -20,6 +20,7 @@
 
 #include "neopixel.h"
 #include "neopixel_driver.h"
+#include "effects.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -37,6 +38,9 @@ extern volatile unsigned short timer_standby;
 void TF_Probe_Act (void);
 void TF_Tim3_Ch2_NeoPixel_1_Enable (void);
 void TF_Tim3_Ch2_NeoPixel_72_Enable (void);
+void TF_IS_Probe (void);
+void TF_IS_Probe_Act (void);
+void TF_All_Conn_Colors (void);
 
 
 // Module Functions ------------------------------------------------------------
@@ -46,8 +50,13 @@ void TF_Hardware_Tests (void)
 
     // TF_Tim3_Ch2_NeoPixel_1_Enable ();
 
-    TF_Tim3_Ch2_NeoPixel_72_Enable ();
-    
+    // TF_Tim3_Ch2_NeoPixel_72_Enable ();
+
+    // TF_IS_Probe ();
+
+    // TF_IS_Probe_Act ();
+
+    TF_All_Conn_Colors ();
 }
 
 
@@ -204,6 +213,338 @@ void TF_Tim3_Ch2_NeoPixel_72_Enable (void)
 	
 	Neo_Driver_Send_Pixel_Data();
 	Wait_ms(2000);	
+    }
+}
+
+
+void TF_IS_Probe (void)
+{
+    // needs hard timeouts
+    pixel_t my_pixel;
+    
+    unsigned char last_value = 0;
+    unsigned char new_value = 0;    
+    unsigned char change = 0;    
+
+    TIM3_Init();
+    
+    while (1)
+    {
+	new_value = IS_Plus_Is_On();
+
+	if (last_value != new_value)
+	{
+	    last_value = new_value;
+	    change = 1;
+	}
+
+	if (last_value)
+	    Probe_Act_On();
+	else
+	    Probe_Act_Off();
+	
+	if (change)
+	{
+	    change = 0;
+	    if (last_value)
+	    {
+		my_pixel.R = 128;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+
+		// start entire buffer with same color
+		for (int i = 0; i < 72; i++)
+		    Neo_Set_Pixel(i, &my_pixel);
+		    
+	    }
+	    else
+	    {
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+
+		// start entire buffer with null color
+		for (int i = 0; i < 72; i++)
+		    Neo_Set_Pixel(i, &my_pixel);
+		    
+	    }
+	    Neo_Driver_Send_Pixel_Data();		
+	}
+
+	Wait_ms (500);
+    }
+}
+
+
+void TF_IS_Probe_Act (void)
+{
+    while (1)
+    {
+	if (IS_PLUS)
+	    Probe_Act_On();
+	else
+	    Probe_Act_Off();
+
+	Wait_ms (5000);
+    }
+}
+
+
+void TF_All_Conn_Colors (void)
+{
+    unsigned char cnt = 0;
+    pixel_t my_pixel;
+
+    TIM3_Init();
+
+    my_pixel.R = 0;
+    my_pixel.G = 0;
+    my_pixel.B = 0;
+
+    // start entire buffer with null color
+    for (int i = 0; i < 72; i++)
+	Neo_Set_Pixel(i, &my_pixel);
+
+    Neo_Driver_Send_Pixel_Data();
+
+    // loop every 5 secs
+    
+    while (1)
+    {
+	Effects_Update_All ();
+
+	if (!timer_standby)
+	{
+	    timer_standby = 5000;
+
+	    switch (cnt)
+	    {
+	    case 0:
+		my_pixel.R = 0;
+		my_pixel.G = 255;
+		my_pixel.B = 32;
+	    
+		// my_pixel.R = 243;
+		// my_pixel.G = 58;
+		// my_pixel.B = 106;
+
+		// my_pixel.R = 137;
+		// my_pixel.G = 207;
+		// my_pixel.B = 240;
+	    
+		// green
+		// 4 & 5
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);	
+
+		cnt++;
+		break;
+	    
+	    case 1:
+		my_pixel.R = 0;
+		my_pixel.G = 255;
+		my_pixel.B = 32;
+
+		// green
+		// 3 & 6
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);
+
+		cnt++;
+		break;
+
+	    case 2:
+		my_pixel.R = 0;
+		my_pixel.G = 255;
+		my_pixel.B = 32;
+
+		// green
+		// 2 & 7
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);
+
+		cnt++;
+		break;
+
+	    case 3:
+		my_pixel.R = 0;
+		my_pixel.G = 255;
+		my_pixel.B = 32;
+
+		// green
+		// 1 & 8
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+
+		cnt++;
+		break;
+	    
+	    case 4:
+	    
+		// red blue
+		// 4 & 5
+		my_pixel.R = 243;
+		my_pixel.G = 58;
+		my_pixel.B = 106;
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 137;
+		my_pixel.G = 207;
+		my_pixel.B = 240;		
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);	
+
+		cnt++;
+		break;
+
+	    case 5:
+	    
+		// red blue
+		// 3 & 6
+		my_pixel.R = 243;
+		my_pixel.G = 58;
+		my_pixel.B = 106;
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 137;
+		my_pixel.G = 207;
+		my_pixel.B = 240;		
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);	
+
+		cnt++;
+		break;
+
+	    case 6:
+	    
+		// red blue
+		// 2 & 7
+		my_pixel.R = 243;
+		my_pixel.G = 58;
+		my_pixel.B = 106;
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 137;
+		my_pixel.G = 207;
+		my_pixel.B = 240;		
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);	
+
+		cnt++;
+		break;
+
+	    case 7:
+	    
+		// red blue
+		// 1 & 8
+		my_pixel.R = 243;
+		my_pixel.G = 58;
+		my_pixel.B = 106;
+		Effects_Connectors_Colors (1, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 137;
+		my_pixel.G = 207;
+		my_pixel.B = 240;		
+		Effects_Connectors_Colors (8, my_pixel, MODE_FIXT);
+
+		my_pixel.R = 0;
+		my_pixel.G = 0;
+		my_pixel.B = 0;
+	    
+		Effects_Connectors_Colors (0, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (2, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (3, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (4, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (5, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (6, my_pixel, MODE_FIXT);
+		Effects_Connectors_Colors (7, my_pixel, MODE_FIXT);	
+
+		cnt = 0;
+		break;
+		
+	    }
+	}
     }
 }
 

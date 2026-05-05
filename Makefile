@@ -55,7 +55,7 @@ DLIBS =
 
 #
 # Define project name here
-PROJECT = MicroC_supply
+PROJECT = MicroC_conn
 
 # List C define here
 CORELIBDIR = ./cmsis_core

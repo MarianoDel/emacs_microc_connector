@@ -41,7 +41,8 @@ typedef enum {
     CONN_INIT,
     CONN_RPI_DISCONNECT,
     CONN_RPI_CHECK_ALREADY_CONNECT,
-    CONN_RPI_OK
+    CONN_RPI_OK,
+    CONN_POWEROFF
 
 } conn_rpi_state_e;
 
@@ -303,6 +304,22 @@ void Connectors_Light (unsigned char ch,
 	break;
 
     case LIGHT_FIXED:
+	// rose
+	// my_pixel.R = 243;
+	// my_pixel.G = 58;
+	// my_pixel.B = 106;
+
+	// baby blue	
+        // my_pixel.R = 137;
+        // my_pixel.G = 207;
+        // my_pixel.B = 240;
+
+	// spring green
+        // my_pixel.R = 0;
+        // my_pixel.G = 255;
+        // my_pixel.B = 127;    // ajusto a 32
+	
+
 	if (Connectors_Polarity_Get() == CONN_POLARITY_POS)
 	{
 	    my_pixel.R = 243;
@@ -331,7 +348,7 @@ void Connectors_Light (unsigned char ch,
 	
 	my_pixel.R = 0;
 	my_pixel.G = 255;
-	my_pixel.B = 0;
+	my_pixel.B = 32;
 	Effects_Connectors_Colors (c_pos, my_pixel, MODE_FIXT);
 	Effects_Connectors_Colors (c_neg, my_pixel, MODE_FIXT);
 	break;
@@ -377,8 +394,7 @@ void Connectors_Update (void)
 #endif
 	break;
 
-    case CONN_RPI_DISCONNECT:
-	
+    case CONN_RPI_DISCONNECT:	
 	Effects_White_No_Conn();
 #ifdef RPI_NO_CONN_STEP_BY_TIMER
 	if (!connectors_timeout)
@@ -477,6 +493,19 @@ void Connectors_Update (void)
 	}
 #endif
 	break;
+
+    case CONN_POWEROFF:	
+	Effects_White_PowerOff();
+
+	break;
+	
+    }
+
+    if (Connectors_PowerOff_Get())
+    {
+	Connectors_PowerOff_Reset();
+	Effects_White_PowerOff_Reset();	
+	conn_rpi = CONN_POWEROFF;
     }
 }
 
@@ -525,6 +554,25 @@ void Connectors_Send_Present (void)
     char buff[40];
     sprintf(buff, "conn 0x%02x 0x%02x\r\n", last_connectors, IS_Plus_Is_On ());
     Uart4Send(buff);
+}
+
+
+unsigned char connectors_to_poweroff = 0;
+void Connectors_PowerOff_Set (void)
+{
+    connectors_to_poweroff = 1;
+}
+
+
+void Connectors_PowerOff_Reset (void)
+{
+    connectors_to_poweroff = 0;
+}
+
+
+unsigned char Connectors_PowerOff_Get (void)
+{
+    return connectors_to_poweroff;
 }
 
 //--- end of file ---//

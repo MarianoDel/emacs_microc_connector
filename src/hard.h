@@ -34,6 +34,9 @@
 // #define RPI_NO_CONN_STEP_BY_TIMER    // go forward with 20s
 #define RPI_NO_CONN_STEP_BY_COMMS    // go forward if rpi is answering
 
+
+// #define IS_PLUS_ON_PB5    // IS_PLUS generally on PB6, changed to PB5 if this line is active
+
 //-------- Oscillator and Crystal selection (Freq in startup_clocks.h) ---
 #define HSI_INTERNAL_RC
 // #define HSE_CRYSTAL_OSC
@@ -106,10 +109,14 @@
 // PB1
 // PB2
 // PB3 PB4 NC jtag
-// PB5 NC
 
+// PB5 NC
 // PB6 
+#ifdef IS_PLUS_ON_PB5
+#define IS_PLUS    ((GPIOB->IDR & 0x0020) == 0)
+#else
 #define IS_PLUS    ((GPIOB->IDR & 0x0040) == 0)
+#endif
 
 // PB7
 // PB8

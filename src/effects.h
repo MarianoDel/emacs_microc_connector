@@ -26,6 +26,8 @@ typedef enum {
 void Effects_Timeouts (void);
 void Effects_White_No_Conn_Reset (void);
 void Effects_White_No_Conn (void);
+void Effects_White_PowerOff_Reset (void);
+void Effects_White_PowerOff (void);
 void Effects_Connectors_Colors (unsigned char conn,
 				pixel_t new_pixel,
 				conn_mode_e mode);

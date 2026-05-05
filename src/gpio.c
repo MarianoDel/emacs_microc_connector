@@ -135,14 +135,20 @@ void GpioInit (void)
     //PB2 NC
     //PB3 NC jtag
     //PB4 NC jtag
-    //PB5 NC
+    //PB5 NC or IS_PLUS
     //PB6 IS_PLUS input pullup
     //PB7 NC
+#ifdef IS_PLUS_ON_PB5
+    temp = GPIOB->CRL;
+    temp &= 0xFF0FFFFF;
+    temp |= 0x00800000;
+    GPIOB->CRL = temp;
+#else
     temp = GPIOB->CRL;
     temp &= 0xF0FFFFFF;
     temp |= 0x08000000;
     GPIOB->CRL = temp;
-
+#endif
     //--- GPIOB High Side -------------------//
     //PB8 NC
     //PB9 NC
@@ -158,10 +164,17 @@ void GpioInit (void)
     GPIOB->CRH = temp;    
     
     //--- GPIOB Pull-Up Pull-Dwn ------------------//
+#ifdef IS_PLUS_ON_PB5    
+    temp = GPIOB->ODR;    //PB13 PB12 PB5 pull-up
+    temp &= 0xCFDF;
+    temp |= 0x3020;
+    GPIOB->ODR = temp;
+#else
     temp = GPIOB->ODR;    //PB13 PB12 PB6 pull-up
     temp &= 0xCFBF;
     temp |= 0x3040;
     GPIOB->ODR = temp;
+#endif
 
     //--- GPIOC Low Side -------------------//
     // PC0 NC

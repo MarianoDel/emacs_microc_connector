@@ -207,6 +207,78 @@ void Effects_White_No_Conn (void)
 }
 
 
+void Effects_White_PowerOff_Reset (void)
+{
+    pixel_t my_pixel;
+
+    my_pixel.R = 0;
+    my_pixel.G = 0;
+    my_pixel.B = 0;
+
+    // start entire buffer with null color
+    for (int i = 0; i < 72; i++)
+	Neo_Set_Pixel(i, &my_pixel);
+
+    Neo_Driver_Send_Pixel_Data();
+    effects_timer = 100;
+    effects_state = EFFECT_L0;
+}
+
+
+void Effects_White_PowerOff (void)
+{
+    pixel_t my_pixel;
+
+    if (effects_timer)
+	return;
+
+    effects_timer = 1500;
+
+    my_pixel.R = 0;
+    my_pixel.G = 0;
+    my_pixel.B = 0;
+
+    // start entire buffer with null color
+    for (int i = 0; i < 72; i++)
+	Neo_Set_Pixel(i, &my_pixel);
+    
+    switch(effects_state)
+    {
+    case EFFECT_L0:
+	my_pixel.R = 42;
+	my_pixel.G = 42;
+	my_pixel.B = 42;
+
+	for (int i = 0; i < 72; i+=8)
+	    Neo_Set_Pixel(i, &my_pixel);
+	
+	effects_state++;
+	break;
+
+    case EFFECT_L1:
+	// for (int i = 1; i < 72; i+=8)
+	//     Neo_Set_Pixel(i, &my_pixel);
+
+	effects_state--;
+	break;
+
+    case EFFECT_L2:
+    case EFFECT_L3:
+    case EFFECT_L4:
+    case EFFECT_L5:
+    case EFFECT_L6:
+    case EFFECT_L7:
+    default:
+	effects_state = EFFECT_L0;
+	break;
+	
+    }
+    
+    Neo_Driver_Send_Pixel_Data();
+
+}
+
+
 void Effects_Connectors_Colors (unsigned char conn,
 				pixel_t new_pixel,
 				conn_mode_e mode)

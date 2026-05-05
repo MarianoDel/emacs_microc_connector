@@ -79,6 +79,10 @@ static void Comms_Messages (char * msg_str)
     {
 	Connectors_Send_Present();
     }
+    else if (strncmp (msg_str, "poweroff", sizeof("poweroff") - 1) == 0)
+    {
+	Connectors_PowerOff_Set();
+    }
     // else
     //     Uart4Send(s_ans_nok);
 
